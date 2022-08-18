@@ -70,11 +70,12 @@ const gameboardFactory = () => {
             let hitLocation = (y * 10) + x;
             locationArray[hitLocation] = 'hit';
             checkBoard();
+            return true;
             //use switch case 'destroyer', etc
         }
         else {
             let missLocation = (y * 10) + x;
-            locationArray[missLocation] = 'miss';
+            return false;
         }
 
     }
@@ -113,18 +114,16 @@ const Player = (name, cpu) => {
 // 5,4,3,3,2
 // 10 by 10 gameboard (A-J, 1-10?)
 
-function gameController() {
-    let playerBoard = gameboardFactory;
-    let cpuBoard = gameboardFactory;
-    let humanPlayer = Player('Bryan', false);
-    let cpuPlayer = Player('Computer', true);
+// function gameController() {
+//     let playerBoard = gameboardFactory();
+//     let computerBoard = gameboardFactory();
+//     let humanPlayer = Player('Bryan', false);
+//     let cpuPlayer = Player('Computer', true);
     
-    let playerTurn = true;
+//     let playerTurn = true;
 
     //need way to switch between player and cpu turn
-
-
-}
+// }
 
 //DOM ELEMENTS
 function renderPlayerBoard() {
@@ -194,35 +193,35 @@ function renderCPUBoard() {
             yCount = 2;
         }
 
+        gridSpace.addEventListener('click', () => {
+            //check if a ship is there and set space status to hit if so and miss if not (place eventlistener outside of DOM and just call functions??)
+            let spaceState = computerBoard.receiveAttack((gridSpace.getAttribute('cpudata-gridX')) , (gridSpace.getAttribute('cpudata-gridY')));
+            if (spaceState === true) {
+                gridSpace.setAttribute('cpuspaceStatus', 'hit');
+                gridSpace.style.backgroundColor = "red";
+            }
+            else if (spaceState === false) {
+                gridSpace.setAttribute('cpuspaceStatus', 'miss');
+                gridSpace.style.backgroundColor= "blue";
+            // remove event listener after click to prevent bugs
+            }
+        })
+
         cpuBoard.appendChild(gridSpace);
-        // }
-        // for (let j = 1; j < 11; j++) {
-        //     gridSpace.setAttribute('cpudata-gridX', j);
-        //     for (let k = 1; k < 11; k++) {
-        //         gridSpace.setAttribute('cpudata-gridY', k);
-        //     }
     }
 }
 
-// gridSpace.addEventListener('click', () => {
-//     //check if a ship is there and set space status to hit if so and miss if not (place eventlistener outside of DOM and just call functions??)
-//     receiveAttack();
-//     if () {
-//         gridSpace.setAttribute('cpuspaceStatus', 'hit');
-//         gridSpace.style.backgroundColor = "red";
-//     }
-//     else if () {
-//         gridSpace.setAttribute('cpuspaceStatus', 'miss');
-//         gridSpace.style.backgroundColor= "blue";
-    //remove event listener after click to prevent bugs
-//     }
-// })
+
 
 
 // function DOMListener() {
     
 // }
 
+let playerBoard = gameboardFactory();
+let computerBoard = gameboardFactory();
+let humanPlayer = Player('Bryan', false);
+let cpuPlayer = Player('Computer', true);
 
 renderPlayerBoard();
 renderCPUBoard();
