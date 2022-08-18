@@ -153,19 +153,18 @@ function renderPlayerBoard() {
 
 function renderCPUBoard() {
     let cpuBoard = document.getElementById('cpuboard');
+    let xCount = 1;
+    let yCount = 1;
+    let yValue = 1;
     for (let i = 1; i < 101; i++) {
         let gridSpace = document.createElement('div');
         gridSpace.classList += 'gridSpace';
-        gridSpace.setAttribute('cpudata-gridID', i)
+        gridSpace.setAttribute('cpudata-gridID', i);
         //set to '' only if initializing, add switch case instead of if?
         if (gridSpace.hasAttribute('cpuspaceStatus') === false) {
             gridSpace.setAttribute('cpuspaceStatus', '');
             
-            gridSpace.addEventListener('click', () => {
-                
-
-                //remove event listener after click to prevent bugs
-            })
+           //event listener here?
 
         }
         else if (gridSpace.getAttribute('cpuspaceStatus') === 'miss') {
@@ -174,11 +173,56 @@ function renderCPUBoard() {
         else if (gridSpace.getAttribute('cpuspaceStatus') === 'hit') {
             gridSpace.textContent = 'hit';
         }
-    }
-        cpuBoard.appendChild(gridSpace);
 
+        if (xCount < 11) {
+            gridSpace.setAttribute('cpudata-gridX', xCount);
+            xCount += 1;
+        }
+        else {
+            xCount = 1;
+            gridSpace.setAttribute('cpudata-gridX', xCount);
+            xCount += 1;
+        }
+
+        if (yCount < 11) {
+            gridSpace.setAttribute('cpudata-gridY', yValue);
+            yCount += 1;
+        }
+        else {
+            yValue += 1;
+            gridSpace.setAttribute('cpudata-gridY', yValue);
+            yCount = 2;
+        }
+
+        cpuBoard.appendChild(gridSpace);
+        // }
+        // for (let j = 1; j < 11; j++) {
+        //     gridSpace.setAttribute('cpudata-gridX', j);
+        //     for (let k = 1; k < 11; k++) {
+        //         gridSpace.setAttribute('cpudata-gridY', k);
+        //     }
     }
 }
 
+// gridSpace.addEventListener('click', () => {
+//     //check if a ship is there and set space status to hit if so and miss if not (place eventlistener outside of DOM and just call functions??)
+//     receiveAttack();
+//     if () {
+//         gridSpace.setAttribute('cpuspaceStatus', 'hit');
+//         gridSpace.style.backgroundColor = "red";
+//     }
+//     else if () {
+//         gridSpace.setAttribute('cpuspaceStatus', 'miss');
+//         gridSpace.style.backgroundColor= "blue";
+    //remove event listener after click to prevent bugs
+//     }
+// })
+
+
+// function DOMListener() {
+    
+// }
+
 
 renderPlayerBoard();
+renderCPUBoard();
