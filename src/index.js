@@ -53,34 +53,59 @@ const gameboardFactory = () => {
 
     //define shipLocation in ship Factory?
 
+    function isAttacked (location) {
+        if (locationArray[location] === 'miss' || locationArray[location] === 'hit') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
 
     function receiveAttack(x, y) {
         if (isShip(x, y) === true) {
             hit(ship);
             totalHits += 1;
+            let hitLocation = (y * 10) + x;
+            locationArray[hitLocation] = 'hit';
+            checkBoard();
             //use switch case 'destroyer', etc
         }
         else {
             let missLocation = (y * 10) + x;
             locationArray[missLocation] = 'miss';
         }
+
     }
 
     function checkBoard() {
         if (totalHits === 17) {
             alert('Game Over!');
+            //specify who won
         }
     }
 
+    return {receiveAttack, isAttacked};
 }
 
 const Player = (name, cpu) => {
     let playerName = name;
 
-    if (cpu === true) {
-        playerBoard.receiveAttack((Math.floor(Math.random() * 10) + 1), (Math.floor(Math.random() * 10) + 1));        
+    function cpuAttack(playerBoard) {
+        let cpuX = (Math.floor(Math.random() * 10) + 1);
+        let cpuY = (Math.floor(Math.random() * 10) + 1);
+        let cpuAttackLocation = (cpuY * 10) + cpuX;
+        
+        if (playerBoard.isAttacked() === false) {
+            playerBoard.receiveAttack(cpuX, cpuY);  
+        }
+        else {
+            cpuAttack(playerBoard);
+        }
     }
+
+    return {cpuAttack, playerName};
 }
 
 
@@ -88,6 +113,72 @@ const Player = (name, cpu) => {
 // 5,4,3,3,2
 // 10 by 10 gameboard (A-J, 1-10?)
 
+function gameController() {
+    let playerBoard = gameboardFactory;
+    let cpuBoard = gameboardFactory;
+    let humanPlayer = Player('Bryan', false);
+    let cpuPlayer = Player('Computer', true);
+    
+    let playerTurn = true;
+
+    //need way to switch between player and cpu turn
 
 
-export default shipFactory;
+}
+
+//DOM ELEMENTS
+function renderPlayerBoard() {
+    let playerBoard = document.getElementById('playerboard');
+    for (let i = 1; i < 101; i++) {
+        let gridSpace = document.createElement('div');
+        gridSpace.classList += 'gridSpace';
+        gridSpace.setAttribute('data-gridID', i)
+        //set to '' only if initializing, add switch case instead of if?
+        if (gridSpace.hasAttribute('spaceStatus') === false) {
+            gridSpace.setAttribute('spaceStatus', '');
+        }
+        else if (gridSpace.getAttribute('spaceStatus') === 'miss') {
+            gridSpace.textContent = 'miss';
+        }
+        else if (gridSpace.getAttribute('spaceStatus') === 'hit') {
+            gridSpace.textContent = 'hit';
+        }
+        else if (gridSpace.getAttribute('spaceStatus') === 'ship') {
+            gridSpace.style.backgroundColor = 'grey';
+        }
+        playerBoard.appendChild(gridSpace);
+
+    }
+}
+
+function renderCPUBoard() {
+    let cpuBoard = document.getElementById('cpuboard');
+    for (let i = 1; i < 101; i++) {
+        let gridSpace = document.createElement('div');
+        gridSpace.classList += 'gridSpace';
+        gridSpace.setAttribute('cpudata-gridID', i)
+        //set to '' only if initializing, add switch case instead of if?
+        if (gridSpace.hasAttribute('cpuspaceStatus') === false) {
+            gridSpace.setAttribute('cpuspaceStatus', '');
+            
+            gridSpace.addEventListener('click', () => {
+                
+
+                //remove event listener after click to prevent bugs
+            })
+
+        }
+        else if (gridSpace.getAttribute('cpuspaceStatus') === 'miss') {
+            gridSpace.textContent = 'miss';
+        }
+        else if (gridSpace.getAttribute('cpuspaceStatus') === 'hit') {
+            gridSpace.textContent = 'hit';
+        }
+    }
+        cpuBoard.appendChild(gridSpace);
+
+    }
+}
+
+
+renderPlayerBoard();
