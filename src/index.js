@@ -5,7 +5,9 @@ const shipFactory = (name, length, ...args) => {
     let hitCount = 0;
     let shipLocations = args;
     let hitLocations = args;
+    let shipsSunk = 0;
 
+    //hit locations will read 'hit' instead of location number if hit
     function hit(location) {
         hitLocations[hitLocations.indexOf(location)]= 'hit';
         hitCount += 1;
@@ -13,14 +15,15 @@ const shipFactory = (name, length, ...args) => {
 
     function isSunk(ship) {
         if (hitCount === length) {
-        return true;
+            shipsSunk += 1;
+            return true;
         }
         else {
             return false;
         }
     }
 
-    return {hit, isSunk, name, hitLocations};
+    return {hit, isSunk, shipsSunk, name, hitLocations};
 }
 
 const gameboardFactory = () => {
@@ -41,6 +44,15 @@ const gameboardFactory = () => {
             locationArray[shipSpace] = `${shipType}`;
         }
         allShipsArray.push(ship);
+    }
+
+    function isValidAttackSpace(location) {
+        if (locationArray[location] !== 'miss' && locationArray[location] !== 'hit' ) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     //check if ship is present in location
@@ -65,22 +77,55 @@ const gameboardFactory = () => {
         }
     }
 
+    //check if all ships have been sunk
+    function checkAllShips () {
+        if (shipsSunk === 5) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
-    return {addShip, locationArray, isShip, receiveAttack, allShipsArray};
+    return {addShip, locationArray, isValidAttackSpace, isShip, receiveAttack, allShipsArray, checkAllShips};
 }
+
+const Player = (name, cpuStatus) => {
+    name;
+
+    //TODO: TEST
+    function cpuAttack (playerBoard) {
+        let attackLocation = (Math.floor((Math.random() * 100) + 1));
+        if (playerBoard.isValidAttackSpace(attackLocation) === true) {
+            playerBoard.receiveAttack(attackLocation);  
+            console.log(`${attackLocation} has not been fired at`)
+        }
+        else {
+            console.log('repeat');
+            cpuAttack(playerBoard);
+        }
+    }
+    return {name, cpuAttack};
+}
+
 
 
 let testBoard = gameboardFactory();
 testBoard.addShip('destroyer', 'destroyer', 4, 6, 7, 8, 9);
-testBoard.receiveAttack(6);
+
+const player1 = Player('Bryan', false);
+
+const cpu = Player('Computer', true);
+
+
+cpu.cpuAttack(testBoard);
 console.table(testBoard.locationArray);
 console.table(testBoard.allShipsArray);
 
-
-
 export {
     shipFactory,
-    gameboardFactory
+    gameboardFactory,
+    Player
 }
 
 
