@@ -1,22 +1,24 @@
 
 
-function renderPlayerBoard() {
+function renderPlayerBoard(array) {
     let playerBoard = document.getElementById('playerboard');
     for (let i = 1; i < 101; i++) {
         let gridSpace = document.createElement('div');
         gridSpace.classList += 'gridSpace';
         gridSpace.setAttribute('data-gridID', i)
-        //set to '' only if initializing, add switch case instead of if?
-        if (gridSpace.hasAttribute('spaceStatus') === false) {
-            gridSpace.setAttribute('spaceStatus', '');
-        }
-        else if (gridSpace.getAttribute('spaceStatus') === 'miss') {
-            gridSpace.textContent = 'miss';
-        }
-        else if (gridSpace.getAttribute('spaceStatus') === 'hit') {
+                //TODO: WRITE CSS FOR MISS AND HIT (MOVE THIS TO CPU BOARD?)
+        if (array[i] === 'hit') {
             gridSpace.textContent = 'hit';
+            gridSpace.style.backgroundColor = 'green';
         }
-        else if (gridSpace.getAttribute('spaceStatus') === 'ship') {
+        else if (array[i] === 'miss') {
+            gridSpace.textContent = 'miss';
+            gridSpace.style.backgroundColor = 'red';
+        }
+        else if (array[i] === 'empty') {
+            gridSpace.style.backgroundColor = 'white';
+        }
+        else {
             gridSpace.style.backgroundColor = 'grey';
         }
         playerBoard.appendChild(gridSpace);
@@ -24,77 +26,56 @@ function renderPlayerBoard() {
     }
 }
 
-function renderCPUBoard(board) {
+function renderCPUBoard(array) {
     let cpuBoard = document.getElementById('cpuboard');
-    let xCount = 1;
-    let yCount = 1;
-    let yValue = 1;
     for (let i = 1; i < 101; i++) {
         let gridSpace = document.createElement('div');
         gridSpace.classList += 'gridSpace';
-        gridSpace.setAttribute('cpudata-gridID', i);
-        //set to '' only if initializing, add switch case instead of if?
-        if (gridSpace.hasAttribute('cpuspacestatus') === false) {
-            gridSpace.setAttribute('cpuspacestatus', '');
-
-        }
-        else if (gridSpace.getAttribute('cpuspacestatus') === 'miss') {
-            gridSpace.textContent = 'miss';
-        }
-        else if (gridSpace.getAttribute('cpuspacestatus') === 'hit') {
+        gridSpace.setAttribute('data-cpugridID', i)
+        if (array[i] === 'hit') {
             gridSpace.textContent = 'hit';
+            gridSpace.style.backgroundColor = 'green';
         }
-
-        if (xCount < 11) {
-            gridSpace.setAttribute('cpudata-gridX', xCount);
-            xCount += 1;
+        else if (array[i] === 'miss') {
+            gridSpace.textContent = 'miss';
+            gridSpace.style.backgroundColor = 'red';
         }
-        else {
-            xCount = 1;
-            gridSpace.setAttribute('cpudata-gridX', xCount);
-            xCount += 1;
-        }
-
-        if (yCount < 11) {
-            gridSpace.setAttribute('cpudata-gridY', yValue);
-            yCount += 1;
+        else if (array[i] === 'empty') {
+            gridSpace.style.backgroundColor = 'white';
         }
         else {
-            yValue += 1;
-            gridSpace.setAttribute('cpudata-gridY', yValue);
-            yCount = 2;
+            gridSpace.style.backgroundColor = 'grey';
         }
-
-
-
-        gridSpace.addEventListener('click', () => {
-            //check if a ship is there and set space status to hit if so and miss if not (place eventlistener outside of DOM and just call functions??)
-            let spaceState = board.receiveAttack((gridSpace.getAttribute('cpudata-gridX')) , (gridSpace.getAttribute('cpudata-gridY')));
-            if (spaceState === true) {
-                gridSpace.setAttribute('cpuspacestatus', 'hit');
-                gridSpace.style.backgroundColor = "red";
-            }
-            else if (spaceState === false) {
-                gridSpace.setAttribute('cpuspacestatus', 'miss');
-                gridSpace.style.backgroundColor= "blue";
-            // remove event listener after click to prevent bugs
-            }
-        })
-
         cpuBoard.appendChild(gridSpace);
-    }
-}
+        }
+}  
 
-function updateCPUBoard(array) {
-    for (let i = 1; i < 101; i++) {
-        let currentGridSpace = document.querySelector(`[cpudata-gridid="${i}"]`);
-        currentGridSpace.setAttribute('cpuspacestatus', `${array[i]}`);
-    }
-}
+//         gridSpace.addEventListener('click', () => {
+//             //check if a ship is there and set space status to hit if so and miss if not (place eventlistener outside of DOM and just call functions??)
+//             let spaceState = board.receiveAttack((gridSpace.getAttribute('cpudata-gridX')) , (gridSpace.getAttribute('cpudata-gridY')));
+//             if (spaceState === true) {
+//                 gridSpace.setAttribute('cpuspacestatus', 'hit');
+//                 gridSpace.style.backgroundColor = "red";
+//             }
+//             else if (spaceState === false) {
+//                 gridSpace.setAttribute('cpuspacestatus', 'miss');
+//                 gridSpace.style.backgroundColor= "blue";
+//             // remove event listener after click to prevent bugs
+//             }
+//         })
+
+//         cpuBoard.appendChild(gridSpace);
+//     }
+// }
+
+// function updateCPUBoard(array) {
+//     for (let i = 1; i < 101; i++) {
+//         let currentGridSpace = document.querySelector(`[cpudata-gridid="${i}"]`);
+//         currentGridSpace.setAttribute('cpuspacestatus', `${array[i]}`);
+//     }}
 
 
 export {
     renderPlayerBoard, 
-    renderCPUBoard,
-    updateCPUBoard
+    renderCPUBoard
 };

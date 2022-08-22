@@ -1,3 +1,5 @@
+import {renderCPUBoard, renderPlayerBoard} from './dom'
+
 
 const shipFactory = (name, length, ...args) => {
     name;
@@ -117,10 +119,11 @@ const player1 = Player('Bryan', false);
 
 const cpu = Player('Computer', true);
 
-
-cpu.cpuAttack(testBoard);
+renderPlayerBoard(testBoard.locationArray);
+renderCPUBoard(testBoard.locationArray);
 console.table(testBoard.locationArray);
 console.table(testBoard.allShipsArray);
+
 
 export {
     shipFactory,
